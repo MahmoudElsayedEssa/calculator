@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "1"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn2.setOnClickListener {
@@ -56,6 +58,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "2"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn3.setOnClickListener {
@@ -67,6 +71,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "3"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn4.setOnClickListener {
@@ -78,6 +84,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "4"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn5.setOnClickListener {
@@ -89,6 +97,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "5"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn6.setOnClickListener {
@@ -100,6 +110,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "6"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn7.setOnClickListener {
@@ -111,6 +123,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "7"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn8.setOnClickListener {
@@ -122,6 +136,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "8"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btn9.setOnClickListener {
@@ -133,6 +149,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "9"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btnA.setOnClickListener {
@@ -144,6 +162,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "A"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btnB.setOnClickListener {
@@ -155,6 +175,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "B"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btnC.setOnClickListener {
@@ -166,6 +188,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "C"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btnD.setOnClickListener {
@@ -177,6 +201,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "D"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btnE.setOnClickListener {
@@ -188,6 +214,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "E"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
 
         binding.btnF.setOnClickListener {
@@ -199,6 +227,8 @@ class MainActivity : AppCompatActivity() {
             }
             val textInput = input + "F"
             binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
         }
         //endregion
 
@@ -345,6 +375,13 @@ class MainActivity : AppCompatActivity() {
             operator = null
         }
 
+    }
+
+    private fun convertToNumberSystems(textInput: String) {
+        binding.tvHex.text = textInput.toInt().toUInt().toString(16)
+        binding.tvDec.text = textInput.toInt().toString()
+        binding.tvOct.text = textInput.toInt().toUInt().toString(8)
+        binding.tvBin.text = textInput.toInt().toUInt().toString(2)
     }
 
 
