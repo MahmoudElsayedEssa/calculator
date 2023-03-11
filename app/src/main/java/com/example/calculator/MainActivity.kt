@@ -6,14 +6,15 @@ import com.example.calculator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private var numberSys = NumberSystem.DECIMAL
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var result = 0
+        var result: Int
         var prevResult = 0
-        var numberSys = NumberSystem.DEC
         var isCalculate = false
         var operator: Operator? = null
         var lastInput = 0
@@ -22,20 +23,44 @@ class MainActivity : AppCompatActivity() {
 
         //region number system buttons
         binding.btnHex.setOnClickListener {
+            numberSys = NumberSystem.HEXADECIMAL
+            binding.tvInput.text = binding.tvHex.text
+            binding.tvExp.text = ""
             hexInput()
         }
         binding.btnOct.setOnClickListener {
+            numberSys = NumberSystem.OCTAL
+            binding.tvInput.text = binding.tvOct.text
+            binding.tvExp.text = ""
             octInput()
         }
         binding.btnDec.setOnClickListener {
+            numberSys = NumberSystem.DECIMAL
+            binding.tvInput.text = binding.tvDec.text
+            binding.tvExp.text = ""
             decInput()
         }
         binding.btnBin.setOnClickListener {
+            numberSys = NumberSystem.BINARY
+            binding.tvInput.text = binding.tvBin.text
+            binding.tvExp.text = ""
             binInput()
         }
         //endregion
 
         //region input buttons
+        binding.btn0.setOnClickListener {
+            var input = binding.tvInput.text.toString()
+            if (input == "0") input = ""
+            if (isCalculate) {
+                input = ""
+                isCalculate = false
+            }
+            val textInput = input + "0"
+            binding.tvInput.text = textInput
+
+            convertToNumberSystems(textInput)
+        }
         binding.btn1.setOnClickListener {
             var input = binding.tvInput.text.toString()
             if (input == "0") input = ""
@@ -160,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                 input = ""
                 isCalculate = false
             }
-            val textInput = input + "A"
+            val textInput = input + "a"
             binding.tvInput.text = textInput
 
             convertToNumberSystems(textInput)
@@ -173,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                 input = ""
                 isCalculate = false
             }
-            val textInput = input + "B"
+            val textInput = input + "b"
             binding.tvInput.text = textInput
 
             convertToNumberSystems(textInput)
@@ -186,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                 input = ""
                 isCalculate = false
             }
-            val textInput = input + "C"
+            val textInput = input + "c"
             binding.tvInput.text = textInput
 
             convertToNumberSystems(textInput)
@@ -199,7 +224,7 @@ class MainActivity : AppCompatActivity() {
                 input = ""
                 isCalculate = false
             }
-            val textInput = input + "D"
+            val textInput = input + "d"
             binding.tvInput.text = textInput
 
             convertToNumberSystems(textInput)
@@ -212,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                 input = ""
                 isCalculate = false
             }
-            val textInput = input + "E"
+            val textInput = input + "e"
             binding.tvInput.text = textInput
 
             convertToNumberSystems(textInput)
@@ -225,146 +250,281 @@ class MainActivity : AppCompatActivity() {
                 input = ""
                 isCalculate = false
             }
-            val textInput = input + "F"
+            val textInput = input + "f"
             binding.tvInput.text = textInput
 
             convertToNumberSystems(textInput)
         }
         //endregion
 
+//        binding.btnPlus.setOnClickListener {
+//            val textInput = binding.tvInput.text.toString()
+//            val textInputPlus = binding.tvExp.text.toString()
+//            val input: String
+//            if (!isCalculate) {
+//                result = textInput.toInt()
+//                input = "$textInputPlus$textInput + "
+//                prevResult += result
+//
+//            } else {
+//                input = "$prevResult + "
+//            }
+//            binding.tvExp.text = input
+//            binding.tvInput.text = prevResult.toString()
+//
+//            convertToNumberSystems(prevResult.toString(), numberSys)
+//
+//
+//            operator = Operator.ADD
+//            isCalculate = true
+//        }
+
         binding.btnPlus.setOnClickListener {
-            val textInput = binding.tvInput.text.toString()
-            val textInputPlus = binding.tvExp.text.toString()
-            var input = ""
-            if (!isCalculate) {
-                result = textInput.toInt()
-                input = "$textInputPlus$textInput + "
-                prevResult += result
-
-            } else {
-                input = "$prevResult + "
+            val textInput = when (numberSys) {
+                NumberSystem.HEXADECIMAL -> Integer.parseInt(binding.tvInput.text.toString(), 16)
+                NumberSystem.DECIMAL -> binding.tvInput.text.toString().toInt()
+                NumberSystem.OCTAL -> Integer.parseInt(binding.tvInput.text.toString(), 8)
+                NumberSystem.BINARY -> Integer.parseInt(binding.tvInput.text.toString(), 2)
             }
-            binding.tvExp.text = input
-            binding.tvInput.text = prevResult.toString()
+            val textInputPlus = binding.tvExp.text.toString()
+            val input = if (isCalculate) {
+                when (numberSys) {
+                    NumberSystem.HEXADECIMAL -> "${prevResult.toUInt().toString(16)} + "
+                    NumberSystem.DECIMAL -> "$prevResult + "
+                    NumberSystem.OCTAL -> "${prevResult.toUInt().toString(8)} + "
+                    NumberSystem.BINARY -> "${prevResult.toUInt().toString(2)} + "
+                }
+            } else "$textInputPlus${binding.tvInput.text}+ "
+            prevResult += textInput
 
+
+            binding.tvExp.text = input
+            binding.tvInput.text = convertToNumberSystems2(prevResult.toString())
+
+            convertToNumberSystems(binding.tvInput.text.toString())
             operator = Operator.ADD
             isCalculate = true
         }
+
         binding.btnSub.setOnClickListener {
-            val textInput = binding.tvInput.text.toString()
-            val textInputPlus = binding.tvExp.text.toString()
-            var input = ""
-            if (!isCalculate) {
-                result = textInput.toInt()
-                input = "$textInputPlus$textInput - "
-                prevResult -= result
-
-            } else {
-                input = "$prevResult - "
+            val textInput = when (numberSys) {
+                NumberSystem.HEXADECIMAL -> Integer.parseInt(binding.tvInput.text.toString(), 16)
+                NumberSystem.DECIMAL -> binding.tvInput.text.toString().toInt()
+                NumberSystem.OCTAL -> Integer.parseInt(binding.tvInput.text.toString(), 8)
+                NumberSystem.BINARY -> Integer.parseInt(binding.tvInput.text.toString(), 2)
             }
-            binding.tvExp.text = input
-            binding.tvInput.text = prevResult.toString()
+            val textInputPlus = binding.tvExp.text.toString()
+            val input = if (isCalculate) {
+                when (numberSys) {
+                    NumberSystem.HEXADECIMAL -> "${prevResult.toUInt().toString(16)} - "
+                    NumberSystem.DECIMAL -> "$prevResult - "
+                    NumberSystem.OCTAL -> "${prevResult.toUInt().toString(8)} - "
+                    NumberSystem.BINARY -> "${prevResult.toUInt().toString(2)} - "
+                }
+            } else "$textInputPlus${binding.tvInput.text}- "
+            prevResult -= textInput
 
+
+            binding.tvExp.text = input
+            binding.tvInput.text = convertToNumberSystems2(prevResult.toString())
+
+            convertToNumberSystems(binding.tvInput.text.toString())
             operator = Operator.SUB
             isCalculate = true
         }
+
+
         binding.btnMlti.setOnClickListener {
-            val textInput = binding.tvInput.text.toString()
-            val textInputPlus = binding.tvExp.text.toString()
-            var input = ""
-            if (!isCalculate) {
-                result = textInput.toInt()
-                input = "$textInputPlus$textInput * "
-                prevResult *= result
-
-            } else {
-                input = "$prevResult * "
+            val textInput = when (numberSys) {
+                NumberSystem.HEXADECIMAL -> Integer.parseInt(binding.tvInput.text.toString(), 16)
+                NumberSystem.DECIMAL -> binding.tvInput.text.toString().toInt()
+                NumberSystem.OCTAL -> Integer.parseInt(binding.tvInput.text.toString(), 8)
+                NumberSystem.BINARY -> Integer.parseInt(binding.tvInput.text.toString(), 2)
             }
-            binding.tvExp.text = input
-            binding.tvInput.text = prevResult.toString()
+            val textInputPlus = binding.tvExp.text.toString()
+            val input = if (isCalculate) {
+                when (numberSys) {
+                    NumberSystem.HEXADECIMAL -> "${prevResult.toUInt().toString(16)} × "
+                    NumberSystem.DECIMAL -> "$prevResult × "
+                    NumberSystem.OCTAL -> "${prevResult.toUInt().toString(8)} × "
+                    NumberSystem.BINARY -> "${prevResult.toUInt().toString(2)} × "
+                }
+            } else "$textInputPlus${binding.tvInput.text}× "
+            prevResult *= textInput
 
+
+            binding.tvExp.text = input
+            binding.tvInput.text = convertToNumberSystems2(prevResult.toString())
+
+            convertToNumberSystems(binding.tvInput.text.toString())
             operator = Operator.MLTI
             isCalculate = true
         }
         binding.btnDiv.setOnClickListener {
-            val textInput = binding.tvInput.text.toString()
-            val textInputPlus = binding.tvExp.text.toString()
-            var input = ""
-            if (!isCalculate) {
-                result = textInput.toInt()
-                input = "$textInputPlus$textInput / "
-                prevResult /= result
-
-            } else {
-                input = "$prevResult / "
+            val textInput = when (numberSys) {
+                NumberSystem.HEXADECIMAL -> Integer.parseInt(binding.tvInput.text.toString(), 16)
+                NumberSystem.DECIMAL -> binding.tvInput.text.toString().toInt()
+                NumberSystem.OCTAL -> Integer.parseInt(binding.tvInput.text.toString(), 8)
+                NumberSystem.BINARY -> Integer.parseInt(binding.tvInput.text.toString(), 2)
             }
-            binding.tvExp.text = input
-            binding.tvInput.text = prevResult.toString()
+            val textInputPlus = binding.tvExp.text.toString()
+            val input = if (isCalculate) {
+                when (numberSys) {
+                    NumberSystem.HEXADECIMAL -> "${prevResult.toUInt().toString(16)} / "
+                    NumberSystem.DECIMAL -> "$prevResult × "
+                    NumberSystem.OCTAL -> "${prevResult.toUInt().toString(8)} / "
+                    NumberSystem.BINARY -> "${prevResult.toUInt().toString(2)} / "
+                }
+            } else "$textInputPlus${binding.tvInput.text}/ "
+            prevResult /= textInput
 
+
+            binding.tvExp.text = input
+            binding.tvInput.text = convertToNumberSystems2(prevResult.toString())
+
+            convertToNumberSystems(binding.tvInput.text.toString())
             operator = Operator.DIV
             isCalculate = true
         }
 
+//        binding.btnEql.setOnClickListener {
+//            val textInput = binding.tvInput.text.toString()
+//            result = textInput.toInt()
+//            val operationText: String
+//            if (isCalculate) {
+//
+//                when (operator) {
+//                    Operator.ADD -> {
+//                        operationText = "$lastInput + $prevResult ="
+//                        prevResult += lastInput
+//                    }
+//                    Operator.DIV -> {
+//                        operationText = "$lastInput / $prevResult ="
+//                        prevResult /= lastInput
+//                    }
+//                    Operator.SUB -> {
+//                        operationText = "$lastInput - $prevResult ="
+//                        prevResult -= lastInput
+//                    }
+//                    Operator.MLTI -> {
+//                        operationText = "$lastInput * $prevResult ="
+//                        prevResult *= lastInput
+//                    }
+//
+//                    else -> {
+//                        operationText = "$lastInput ="
+//                    }
+//                }
+//
+//            } else {
+//
+//                lastInput = prevResult
+//                when (operator) {
+//                    Operator.ADD -> {
+//                        operationText = "$prevResult + $result ="
+//                        prevResult += result
+//                    }
+//                    Operator.DIV -> {
+//                        operationText = "$prevResult / $result ="
+//                        prevResult /= result
+//                    }
+//                    Operator.SUB -> {
+//                        operationText = "$prevResult - $result ="
+//                        prevResult -= result
+//                    }
+//                    Operator.MLTI -> {
+//                        operationText = "$prevResult * $result ="
+//                        prevResult *= result
+//                    }
+//
+//                    else -> {
+//                        operationText = "$result ="
+//                    }
+//                }
+//            }
+//            convertToNumberSystems(prevResult.toString())
+//            isCalculate = true
+//            binding.tvExp.text = operationText
+//            binding.tvInput.text = prevResult.toString()
+//
+//        }
+
         binding.btnEql.setOnClickListener {
             val textInput = binding.tvInput.text.toString()
-            result = textInput.toInt()
-            var operationText = ""
-            if (isCalculate) {
+            val inputValue = when (numberSys) {
+                NumberSystem.HEXADECIMAL -> Integer.parseInt(textInput, 16)
+                NumberSystem.DECIMAL -> textInput.toInt()
+                NumberSystem.OCTAL -> Integer.parseInt(textInput, 8)
+                NumberSystem.BINARY -> Integer.parseInt(textInput, 2)
+            }
 
+            val operationText: String
+            if (isCalculate) {
                 when (operator) {
                     Operator.ADD -> {
-                        operationText = "$lastInput + $prevResult ="
+                        operationText = "${convertToNumberSystems2(lastInput.toString())} + ${
+                            convertToNumberSystems2(prevResult.toString())
+                        } ="
                         prevResult += lastInput
                     }
                     Operator.DIV -> {
-                        operationText = "$lastInput / $prevResult ="
+                        operationText = "${convertToNumberSystems2(lastInput.toString())} / ${
+                            convertToNumberSystems2(prevResult.toString())
+                        } ="
                         prevResult /= lastInput
                     }
                     Operator.SUB -> {
-                        operationText = "$lastInput - $prevResult ="
+                        operationText = "${convertToNumberSystems2(lastInput.toString())} - ${
+                            convertToNumberSystems2(prevResult.toString())
+                        } ="
                         prevResult -= lastInput
                     }
                     Operator.MLTI -> {
-                        operationText = "$lastInput * $prevResult ="
+                        operationText = "${convertToNumberSystems2(lastInput.toString())} * ${
+                            convertToNumberSystems2(prevResult.toString())
+                        } ="
                         prevResult *= lastInput
                     }
-
                     else -> {
-                        operationText = "$lastInput ="
+                        operationText = "${convertToNumberSystems2(lastInput.toString())} ="
                     }
                 }
-
             } else {
-
                 lastInput = prevResult
                 when (operator) {
                     Operator.ADD -> {
-                        operationText = "$prevResult + $result ="
-                        prevResult += result
+                        operationText =
+                            "${convertToNumberSystems2(prevResult.toString())} + $textInput ="
+                        prevResult += inputValue
                     }
                     Operator.DIV -> {
-                        operationText = "$prevResult / $result ="
-                        prevResult /= result
+                        operationText =
+                            "${convertToNumberSystems2(prevResult.toString())} / $textInput ="
+                        prevResult /= inputValue
                     }
                     Operator.SUB -> {
-                        operationText = "$prevResult - $result ="
-                        prevResult -= result
+                        operationText =
+                            "${convertToNumberSystems2(prevResult.toString())} - $textInput ="
+                        prevResult -= inputValue
                     }
                     Operator.MLTI -> {
-                        operationText = "$prevResult * $result ="
-                        prevResult *= result
+                        operationText =
+                            "${convertToNumberSystems2(prevResult.toString())} * $textInput ="
+                        prevResult *= inputValue
                     }
-
                     else -> {
-                        operationText = "$result ="
+                        operationText = "$textInput ="
                     }
                 }
             }
+
+            convertToNumberSystems(binding.tvInput.text.toString())
             isCalculate = true
             binding.tvExp.text = operationText
-            binding.tvInput.text = prevResult.toString()
-
+            binding.tvInput.text = convertToNumberSystems2(prevResult.toString())
         }
+
+
         binding.btnClr.setOnClickListener {
             binding.tvExp.text = ""
             binding.tvInput.text = "0"
@@ -377,11 +537,55 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+    private fun convertToNumberSystems2(input: String): String {
+        val decimalValue = input.toInt()
+
+        return when (numberSys) {
+            NumberSystem.DECIMAL -> decimalValue.toString()
+            NumberSystem.HEXADECIMAL -> Integer.toHexString(decimalValue)
+            NumberSystem.BINARY -> Integer.toBinaryString(decimalValue)
+            NumberSystem.OCTAL -> Integer.toOctalString(decimalValue)
+        }
+    }
+
     private fun convertToNumberSystems(textInput: String) {
-        binding.tvHex.text = textInput.toInt().toUInt().toString(16)
-        binding.tvDec.text = textInput.toInt().toString()
-        binding.tvOct.text = textInput.toInt().toUInt().toString(8)
-        binding.tvBin.text = textInput.toInt().toUInt().toString(2)
+
+        when (numberSys) {
+            NumberSystem.HEXADECIMAL -> {
+                val decimal = textInput.toInt(16)
+                binding.tvHex.text = decimal.toUInt().toString(16)
+                binding.tvDec.text = decimal.toString()
+                binding.tvOct.text = decimal.toUInt().toString(8)
+                binding.tvBin.text = decimal.toUInt().toString(2)
+
+            }
+            NumberSystem.DECIMAL -> {
+                val decimal = textInput.toInt()
+                binding.tvHex.text = decimal.toUInt().toString(16)
+                binding.tvDec.text = decimal.toString()
+                binding.tvOct.text = decimal.toUInt().toString(8)
+                binding.tvBin.text = decimal.toUInt().toString(2)
+            }
+            NumberSystem.OCTAL -> {
+                val decimal = textInput.toInt(8)
+                binding.tvHex.text = decimal.toUInt().toString(16)
+                binding.tvDec.text = decimal.toString()
+                binding.tvOct.text = decimal.toUInt().toString(8)
+                binding.tvBin.text = decimal.toUInt().toString(2)
+
+            }
+            NumberSystem.BINARY -> {
+                val decimal = textInput.toInt(2)
+                binding.tvHex.text = decimal.toUInt().toString(16)
+                binding.tvDec.text = decimal.toString()
+                binding.tvOct.text = decimal.toUInt().toString(8)
+                binding.tvBin.text = decimal.toUInt().toString(2)
+
+            }
+        }
+
+
     }
 
 
