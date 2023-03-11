@@ -518,10 +518,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            convertToNumberSystems(binding.tvInput.text.toString())
             isCalculate = true
             binding.tvExp.text = operationText
             binding.tvInput.text = convertToNumberSystems2(prevResult.toString())
+            convertToNumberSystems(binding.tvInput.text.toString())
         }
 
 
@@ -533,6 +533,7 @@ class MainActivity : AppCompatActivity() {
             result = 0
             isCalculate = false
             operator = null
+            convertToNumberSystems("0")
         }
 
     }
