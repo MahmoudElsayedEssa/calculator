@@ -205,42 +205,97 @@ class MainActivity : AppCompatActivity() {
         binding.btnPlus.setOnClickListener {
             val textInput = binding.tvInput.text.toString()
             val textInputPlus = binding.tvExp.text.toString()
-
-
+            var input = ""
             if (!isCalculate) {
                 result = textInput.toInt()
-                val input = "$textInputPlus$textInput + "
-                binding.tvExp.text = input
+                input = "$textInputPlus$textInput + "
                 prevResult += result
-                binding.tvInput.text = prevResult.toString()
 
             } else {
-                val input = "$prevResult + "
-                binding.tvExp.text = input
-                binding.tvInput.text = prevResult.toString()
+                input = "$prevResult + "
             }
-
+            binding.tvExp.text = input
+            binding.tvInput.text = prevResult.toString()
 
             operator = Operator.ADD
+            isCalculate = true
+        }
+        binding.btnSub.setOnClickListener {
+            val textInput = binding.tvInput.text.toString()
+            val textInputPlus = binding.tvExp.text.toString()
+            var input = ""
+            if (!isCalculate) {
+                result = textInput.toInt()
+                input = "$textInputPlus$textInput - "
+                prevResult -= result
+
+            } else {
+                input = "$prevResult - "
+            }
+            binding.tvExp.text = input
+            binding.tvInput.text = prevResult.toString()
+
+            operator = Operator.SUB
+            isCalculate = true
+        }
+        binding.btnMlti.setOnClickListener {
+            val textInput = binding.tvInput.text.toString()
+            val textInputPlus = binding.tvExp.text.toString()
+            var input = ""
+            if (!isCalculate) {
+                result = textInput.toInt()
+                input = "$textInputPlus$textInput * "
+                prevResult *= result
+
+            } else {
+                input = "$prevResult * "
+            }
+            binding.tvExp.text = input
+            binding.tvInput.text = prevResult.toString()
+
+            operator = Operator.MLTI
+            isCalculate = true
+        }
+        binding.btnDiv.setOnClickListener {
+            val textInput = binding.tvInput.text.toString()
+            val textInputPlus = binding.tvExp.text.toString()
+            var input = ""
+            if (!isCalculate) {
+                result = textInput.toInt()
+                input = "$textInputPlus$textInput / "
+                prevResult /= result
+
+            } else {
+                input = "$prevResult / "
+            }
+            binding.tvExp.text = input
+            binding.tvInput.text = prevResult.toString()
+
+            operator = Operator.DIV
             isCalculate = true
         }
 
         binding.btnEql.setOnClickListener {
             val textInput = binding.tvInput.text.toString()
             result = textInput.toInt()
+            var operationText = ""
             if (isCalculate) {
-                var operationText = "$lastInput + $prevResult ="
+
                 when (operator) {
                     Operator.ADD -> {
+                        operationText = "$lastInput + $prevResult ="
                         prevResult += lastInput
                     }
                     Operator.DIV -> {
+                        operationText = "$lastInput / $prevResult ="
                         prevResult /= lastInput
                     }
                     Operator.SUB -> {
+                        operationText = "$lastInput - $prevResult ="
                         prevResult -= lastInput
                     }
-                    Operator.MUL -> {
+                    Operator.MLTI -> {
+                        operationText = "$lastInput * $prevResult ="
                         prevResult *= lastInput
                     }
 
@@ -248,23 +303,25 @@ class MainActivity : AppCompatActivity() {
                         operationText = "$lastInput ="
                     }
                 }
-                isCalculate = true
-                binding.tvExp.text = operationText
-                binding.tvInput.text = prevResult.toString()
+
             } else {
-                var operationText = "$prevResult + $result ="
+
                 lastInput = prevResult
                 when (operator) {
                     Operator.ADD -> {
+                        operationText = "$prevResult + $result ="
                         prevResult += result
                     }
                     Operator.DIV -> {
+                        operationText = "$prevResult / $result ="
                         prevResult /= result
                     }
                     Operator.SUB -> {
+                        operationText = "$prevResult - $result ="
                         prevResult -= result
                     }
-                    Operator.MUL -> {
+                    Operator.MLTI -> {
+                        operationText = "$prevResult * $result ="
                         prevResult *= result
                     }
 
@@ -272,11 +329,10 @@ class MainActivity : AppCompatActivity() {
                         operationText = "$result ="
                     }
                 }
-                isCalculate = true
-                binding.tvExp.text = operationText
-                binding.tvInput.text = prevResult.toString()
             }
-
+            isCalculate = true
+            binding.tvExp.text = operationText
+            binding.tvInput.text = prevResult.toString()
 
         }
         binding.btnClr.setOnClickListener {

@@ -330,15 +330,6 @@
         app:layout_constraintStart_toEndOf="@+id/btn_a" />
 
     <Button
-        android:id="@+id/btn_dot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="."
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_0"
-        app:layout_constraintStart_toEndOf="@+id/btn_0" />
-
-    <Button
         android:id="@+id/btn_eql"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
