@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="raisin_black">#202020</color>
+    <color name="eerie_black">#282828</color>
+    <color name="plum">#3B3B3B</color>
+    <color name="baby_purple">#db9ce3</color>
+    <color name="jet">#DB9EE5</color>
+    <color name="grey">#A6A6A6</color>
 </resources>

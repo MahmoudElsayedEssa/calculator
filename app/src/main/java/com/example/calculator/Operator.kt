@@ -1,6 +1,6 @@
 package com.example.calculator
 
 
-enum class Operator() {
-    ADD, SUB, MLTI, DIV, NONE
+enum class Operator(var symbol:String) {
+    ADD("+"), SUB(""), MLTI(""), DIV("")
 }
