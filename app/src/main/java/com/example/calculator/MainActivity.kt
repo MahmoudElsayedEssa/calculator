@@ -151,9 +151,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             var input = binding.tvInput.text.toString()
             if (input == "0") input = ""
-            if (input.length > 1)
-                input = input.dropLast(1)
-            else input = "0"
+            input = if (input.length > 1)
+                input.dropLast(1)
+            else "0"
             binding.tvInput.text = input
             convertToNumberSystems(input)
         }
