@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
     private var numberSys = NumberSystem.DECIMAL
     private var isCalculate = false
     private var operator: Operator? = null
+    private var prevResult = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,27 +164,17 @@ class MainActivity : AppCompatActivity() {
             val textExpression = binding.tvExp.text.toString()
 
             operator = Operator.ADD
-            prevResult += textInput
-            binding.tvExp.text =
-                getExpression(prevResult, textExpression)
-            binding.tvInput.text = convertDecimalIntegerToNumberSystem(prevResult.toString())
-
-            convertToNumberSystems(binding.tvInput.text.toString())
-            isCalculate = true
+            calculateOperation(textInput)
+            updateUI(textExpression)
         }
 
         binding.btnSub.setOnClickListener {
             val textInput = convertNumberSystemToDecimalInteger(binding.tvInput.text.toString())
             val textExpression = binding.tvExp.text.toString()
 
-            operator = Operator.SUB
-            prevResult -= textInput
-            binding.tvExp.text =
-                getExpression(prevResult, textExpression)
-            binding.tvInput.text = convertDecimalIntegerToNumberSystem(prevResult.toString())
-
-            convertToNumberSystems(binding.tvInput.text.toString())
-            isCalculate = true
+            operator = Operator.SUBTRACTION
+            calculateOperation(textInput)
+            updateUI(textExpression)
         }
 
 
@@ -191,27 +182,17 @@ class MainActivity : AppCompatActivity() {
             val textInput = convertNumberSystemToDecimalInteger(binding.tvInput.text.toString())
             val textExpression = binding.tvExp.text.toString()
 
-            operator = Operator.MLTI
-            prevResult *= textInput
-            binding.tvExp.text =
-                getExpression(prevResult, textExpression)
-            binding.tvInput.text = convertDecimalIntegerToNumberSystem(prevResult.toString())
-
-            convertToNumberSystems(binding.tvInput.text.toString())
-            isCalculate = true
+            operator = Operator.MULTIPLICATION
+            calculateOperation(textInput)
+            updateUI(textExpression)
         }
         binding.btnDiv.setOnClickListener {
             val textInput = convertNumberSystemToDecimalInteger(binding.tvInput.text.toString())
             val textExpression = binding.tvExp.text.toString()
 
-            operator = Operator.DIV
-            prevResult /= textInput
-            binding.tvExp.text =
-                getExpression(prevResult, textExpression)
-            binding.tvInput.text = convertDecimalIntegerToNumberSystem(prevResult.toString())
-
-            convertToNumberSystems(binding.tvInput.text.toString())
-            isCalculate = true
+            operator = Operator.DIVISION
+            calculateOperation(textInput)
+            updateUI(textExpression)
         }
 
 
@@ -229,21 +210,21 @@ class MainActivity : AppCompatActivity() {
                             } ="
                         prevResult += lastInput
                     }
-                    Operator.DIV -> {
+                    Operator.DIVISION -> {
                         operationText =
                             "${convertDecimalIntegerToNumberSystem(lastInput.toString())} / ${
                                 convertDecimalIntegerToNumberSystem(prevResult.toString())
                             } ="
                         prevResult /= lastInput
                     }
-                    Operator.SUB -> {
+                    Operator.SUBTRACTION -> {
                         operationText =
                             "${convertDecimalIntegerToNumberSystem(lastInput.toString())} - ${
                                 convertDecimalIntegerToNumberSystem(prevResult.toString())
                             } ="
                         prevResult -= lastInput
                     }
-                    Operator.MLTI -> {
+                    Operator.MULTIPLICATION -> {
                         operationText =
                             "${convertDecimalIntegerToNumberSystem(lastInput.toString())} * ${
                                 convertDecimalIntegerToNumberSystem(prevResult.toString())
@@ -263,17 +244,17 @@ class MainActivity : AppCompatActivity() {
                             "${convertDecimalIntegerToNumberSystem(prevResult.toString())} + $textInput ="
                         prevResult += inputValue
                     }
-                    Operator.DIV -> {
+                    Operator.DIVISION -> {
                         operationText =
                             "${convertDecimalIntegerToNumberSystem(prevResult.toString())} / $textInput ="
                         prevResult /= inputValue
                     }
-                    Operator.SUB -> {
+                    Operator.SUBTRACTION -> {
                         operationText =
                             "${convertDecimalIntegerToNumberSystem(prevResult.toString())} - $textInput ="
                         prevResult -= inputValue
                     }
-                    Operator.MLTI -> {
+                    Operator.MULTIPLICATION -> {
                         operationText =
                             "${convertDecimalIntegerToNumberSystem(prevResult.toString())} * $textInput ="
                         prevResult *= inputValue
@@ -301,6 +282,25 @@ class MainActivity : AppCompatActivity() {
             convertToNumberSystems("0")
         }
 
+    }
+
+    private fun updateUI(textExpression: String) {
+        binding.tvExp.text =
+            getExpression(prevResult, textExpression)
+        binding.tvInput.text = convertDecimalIntegerToNumberSystem(prevResult.toString())
+
+        convertToNumberSystems(binding.tvInput.text.toString())
+        isCalculate = true
+    }
+
+    private fun calculateOperation(textInput: Int) {
+        when (operator) {
+            Operator.ADD -> prevResult += textInput
+            Operator.SUBTRACTION -> prevResult -= textInput
+            Operator.MULTIPLICATION -> prevResult *= textInput
+            Operator.DIVISION -> prevResult /= textInput
+            else -> {}
+        }
     }
 
     private fun addSymbolToInputText(buttonSymbols: String): String {
@@ -385,7 +385,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun enableHexadecimalInput() {
-        enableAlphabeticsButtons()
+        enableAlphabeticButtons()
         enable2to9Buttons()
 
         binding.tvLineHex.visibility = View.VISIBLE
@@ -395,7 +395,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun enableDecimalInput() {
-        disableAlphabeticsButtons()
+        disableAlphabeticButtons()
         enable2to9Buttons()
         binding.tvLineHex.visibility = View.GONE
         binding.tvLineDec.visibility = View.VISIBLE
@@ -404,7 +404,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun enableOctalInput() {
-        disableAlphabeticsButtons()
+        disableAlphabeticButtons()
         enable2to9Buttons()
         disable89Buttons()
         binding.tvLineHex.visibility = View.GONE
@@ -414,7 +414,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun enableBinaryInput() {
-        disableAlphabeticsButtons()
+        disableAlphabeticButtons()
         disable2to9Buttons()
         binding.tvLineHex.visibility = View.GONE
         binding.tvLineDec.visibility = View.GONE
@@ -423,7 +423,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun enableAlphabeticsButtons() {
+    private fun enableAlphabeticButtons() {
         binding.btnA.isEnabled = true
         binding.btnB.isEnabled = true
         binding.btnC.isEnabled = true
@@ -448,7 +448,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun disableAlphabeticsButtons() {
+    private fun disableAlphabeticButtons() {
         binding.btnA.isEnabled = false
         binding.btnB.isEnabled = false
         binding.btnC.isEnabled = false
